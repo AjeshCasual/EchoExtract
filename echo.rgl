@@ -1,0 +1,22 @@
+#
+# rgl layout text file (v4.0) - raygui layout file generated using rGuiLayout
+#
+# Number of controls:     11
+#
+# Ref. window:    r <x> <y> <width> <height>
+# Anchor info:    a <id> <name> <posx> <posy> <enabled>
+# Control info:   c <id> <type> <name> <rectangle> <anchor_id> <text>
+#
+r 0 40 -1 -1
+a 001 anchor01 96 80 1
+c 000 0 WindowBoxMain 0 0 928 600 1 EchoExtract
+c 001 11 DropdownFileType 800 528 120 24 1 MP3;MP4
+c 002 20 ScrollPanelMain 8 96 912 424 1 
+c 003 5 ButtonDelete 136 32 64 24 1 Delete
+c 004 5 ButtonNewFolder 8 32 120 24 1 New Folder
+c 005 12 TextBoxYTL 8 528 784 24 1 TouTube Link
+c 006 12 TextBoxRename 328 32 592 24 1 Rename
+c 007 5 ButtonRename 208 32 112 24 1 Rename
+c 008 5 ButtonDownload 8 560 912 32 1 Download
+c 009 4 LabelLocation 40 64 880 24 1 C:/Path/To/Your/Folder
+c 010 5 ButtonBack 8 64 24 24 1 <-
