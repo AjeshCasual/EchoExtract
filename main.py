@@ -1,4 +1,5 @@
 import pyray as rl
+from pathlib import Path
 rl.init_window(960, 540, "EchoExtract")
 rl.gui_enable()
 rl.set_target_fps(60)
@@ -18,12 +19,7 @@ layoutRecs = (
         rl.Rectangle( 8, 448, 680, 32 ),
     );
 
-def ButtonDownload():
-    print("Downloading")
-def ButtonCreate():
-    print("Created")
-def ButtonGetLink():
-    print("got")
+
 
 WindowBoxText = "SAMPLE TEXT"
 ButtonDownloadText = "Download"
@@ -36,14 +32,54 @@ DummyRecLinkText = "Link"
 
 WindowBoxActive = True
 DropdownBoxTypeEditMode = False
-DropdownBoxTypeActive = 0
+DropdownBoxTypeActive = rl.ffi.new('int *',0)
 TextBoxFolderEditMode = False
-TextBoxFolderText = "Folder"
-ListViewFolderScrollIndex = 0
-ListViewFolderActive = 0
-ListViewMusicScrollIndex = 0
-ListViewMusicActive = 0
+TextBoxFolderText = rl.ffi.new("char []", b"Folder")
+ListViewFolderScrollIndex = rl.ffi.new('int *',0)
+ListViewFolderActive = rl.ffi.new('int *',0)
+ListViewMusicScrollIndex = rl.ffi.new('int *',0)
+ListViewMusicActive = rl.ffi.new('int *',0)
+DownloadableLink = False
 
+
+def ListDir():
+
+    temp = Path.cwd()
+
+    Dir = [item.name for item in temp.iterdir() if item.is_dir()]
+    DirSep = ';'.join(Dir) + ';'
+    return DirSep
+
+def ListFileMP3(fol):
+    temp = Path.cwd()/fol
+    Files = [file.name[:70] for file in temp.rglob('*.mp3') if file.is_file()]
+    FileSep = ';'.join(Files) + ';'
+    return FileSep
+
+def ListFileMP4(fol):
+    temp = Path.cwd()/fol
+    Files = [file.name[:70] for file in temp.rglob('*.mp4') if file.is_file()]
+    FileSep = ';'.join(Files) + ';'
+    return FileSep
+    
+def Splitter(text):
+    return text.strip(';').split(';')
+
+ListViewFolderText = ListDir()
+ListViewMusicText = ListFileMP3("kj")
+
+def ButtonDownload():
+    print("Downloading")
+
+def ButtonCreate():
+    mkdir(parents=True, exist_ok=True)
+    print("Created")
+def ButtonGetLink():
+    global DummyRecLinkText
+    if len(rl.get_clipboard_text()) < 150 and rl.get_clipboard_text().startswith("https://www.youtube.com/watch?"):
+        DummyRecLinkText = rl.get_clipboard_text()
+    else:
+        DummyRecLinkText = "Link Error"
 
 while not rl.window_should_close():
     rl.begin_drawing()
@@ -61,16 +97,16 @@ while not rl.window_should_close():
             TextBoxFolderEditMode = not(TextBoxFolderEditMode)
         if (rl.gui_button(layoutRecs[4], ButtonCreateText)):
             ButtonCreate() 
-        rl.gui_list_view(layoutRecs[5], ListViewFolderText, rl.ffi.new('int *',ListViewFolderScrollIndex), rl.ffi.new('int *',ListViewFolderActive))
-        rl.gui_list_view(layoutRecs[6], ListViewMusicText, rl.ffi.new('int *',ListViewMusicScrollIndex), rl.ffi.new('int *',ListViewMusicActive))
+        rl.gui_list_view(layoutRecs[5], ListViewFolderText, ListViewFolderScrollIndex, ListViewFolderActive)
+        rl.gui_list_view(layoutRecs[6], ListViewMusicText, ListViewMusicScrollIndex, ListViewMusicActive)
         if (rl.gui_button(layoutRecs[7], ButtonGetLinkText)):
             ButtonGetLink() 
         rl.gui_dummy_rec(layoutRecs[8], DummyRecLinkText)
-        if (rl.gui_dropdown_box(layoutRecs[2], DropdownBoxTypeText, rl.ffi.new('int *',DropdownBoxTypeActive), DropdownBoxTypeEditMode)):
+        if (rl.gui_dropdown_box(layoutRecs[2], DropdownBoxTypeText, DropdownBoxTypeActive, DropdownBoxTypeEditMode)):
             DropdownBoxTypeEditMode = not(DropdownBoxTypeEditMode)
+        print(ListViewFolderActive[0])
     rl.gui_unlock()
 
 
     rl.end_drawing()
 rl.close_window()
-
