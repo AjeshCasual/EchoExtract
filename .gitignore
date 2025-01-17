@@ -1,6 +1,0 @@
-.venv
-.gitattributes
-.gitignore
-test.py
-*.mp3
-*.mp4
